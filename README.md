@@ -11,3 +11,12 @@
 ### 注意
 
 1. cz.prompt(questions)是 Promise
+
+### 发布 npm 包
+
+// 如果没有登录, npm login
+npm publish
+
+### 撤销 npm 包
+
+npm unpublish cz-jira@1.0.0
