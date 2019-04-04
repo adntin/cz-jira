@@ -15,13 +15,17 @@ const filePath = path.resolve(pkgDir, JIRA_ACCOUNT_FILE_NAME); // absolute path
 
 const getJiraAccount = () => {
   if (fs.existsSync(filePath)) {
-    return require(filePath);
+    const json = require(filePath); // js code
+    // const strBase64 = fs.readFileSync(filePath, "utf8"); // base 64 string
+    json.password = Buffer.from(json.password, "base64").toString();
+    return json;
   }
   return null;
 };
 
 // {"username": "", "password": ""}
 const setJiraAccount = json => {
+  json.password = Buffer.from(json.password).toString("base64");
   fs.writeFileSync(filePath, JSON.stringify(json));
   console.log(chalk.green("\nThe JIRA account was successfully saved!\n"));
   return json;
