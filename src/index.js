@@ -39,8 +39,8 @@ const _prompter = async (cz, commit) => {
     console.log(chalk.green("Your are first time connect to JIRA.\n"));
     const questions = getJiraQuestions(); // array[object]
     const json = await cz.prompt(questions); // {"username": "", "password": ""}
-    const account = setJiraAccount(json);
-    await commitHandler(cz, commit, account);
+    setJiraAccount(json);
+    await commitHandler(cz, commit, json);
   } catch (error) {
     console.log(chalk.red(error));
     removeJiraAccount();
