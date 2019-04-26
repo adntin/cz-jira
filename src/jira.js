@@ -1,12 +1,13 @@
-const chalk = require("chalk");
 const fs = require("fs");
 const path = require("path");
+const chalk = require("chalk");
 const findConfig = require("find-config");
 const JiraConnector = require("jira-connector");
 const gitBranch = require("git-branch");
 const config = require("./getConfig");
 
 const JIRA_ACCOUNT_FILE_NAME = "jira.config.json";
+const { protocol, host, port, prefix } = config;
 
 // /Users/devin.lin/Desktop/git-management/package.json
 const pkg = findConfig("package.json", { home: false });
@@ -35,24 +36,32 @@ const removeJiraAccount = () => {
 };
 
 const getIssueInfo = async ({ username, password }) => {
-  const jira = new JiraConnector({
-    host: config.host || "jira.ringcentral.com",
-    basic_auth: { username, password }
-  });
   const branchName = gitBranch.sync(); // feature/FIJI-1000 || master
   const ticket = branchName.split("/").pop(); // FIJI-1000
+  const regExp = new RegExp(`^${prefix}-\\d+$`, 'g');
   // The current "master" branch cannot fetch Jira information.
-  if (!ticket.match(/^FIJI-\d+$/)) {
+  if (!regExp.test(ticket)) {
     const errors = [
+      `git branch name: ${branchName}`,
+      `ticket: ${ticket}`,
+      `prefix: ${prefix}`,
       `The current "${branchName}" branch cannot fetch Jira information.`,
       "You need to fill it out manually."
     ];
     throw errors.join("\n");
   }
   try {
+    const jira = new JiraConnector({
+      protocol,
+      port,
+      host: host || "jira.ringcentral.com",
+      basic_auth: { username, password }
+    });
+    // console.log('host:', host);
     let summary = await new Promise((resolve, reject) =>
       jira.issue.getIssue({ issueKey: ticket }, (error, issue) => {
         if (error) {
+          console.log('Fetch issue info error:', error);
           reject(error);
         } else {
           resolve(issue.fields.summary);
@@ -61,7 +70,7 @@ const getIssueInfo = async ({ username, password }) => {
     );
     return { ticket, summary };
   } catch (err) {
-    throw new Error("Unable to connect to Jira.");
+    throw new Error("Unable to connect to Jira.", err);
   }
 };
 

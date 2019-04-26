@@ -20,3 +20,7 @@
 ### 撤销 npm 包
 
 - npm unpublish cz-jira@1.0.0
+
+### 测试 jira 是否可获得数据
+
+- node ./src/test.js
