@@ -26,8 +26,9 @@ const getJiraAccount = () => {
 
 // {"username": "", "password": ""}
 const setJiraAccount = json => {
-  json.password = Buffer.from(json.password).toString("base64");
-  fs.writeFileSync(filePath, JSON.stringify(json));
+  const account = { ...json }; // clone object data
+  account.password = Buffer.from(account.password).toString("base64");
+  fs.writeFileSync(filePath, JSON.stringify(account));
   console.log(chalk.green("\nThe JIRA account was successfully saved!\n"));
 };
 
@@ -51,17 +52,18 @@ const getIssueInfo = async ({ username, password }) => {
     throw errors.join("\n");
   }
   try {
-    const jira = new JiraConnector({
+    const params = {
       protocol,
       port,
       host: host || "jira.ringcentral.com",
       basic_auth: { username, password }
-    });
+    };
+    const jira = new JiraConnector(params);
     // console.log('host:', host);
     let summary = await new Promise((resolve, reject) =>
       jira.issue.getIssue({ issueKey: ticket }, (error, issue) => {
         if (error) {
-          console.log('Fetch issue info error:', error);
+          console.log('Fetch issue info error:', params);
           reject(error);
         } else {
           resolve(issue.fields.summary);
