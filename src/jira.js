@@ -72,7 +72,7 @@ const getIssueInfo = async ({ username, password }) => {
     );
     return { ticket, summary };
   } catch (err) {
-    throw new Error("Unable to connect to Jira.", err);
+    throw new Error("Unable to connect to Jira. If you change your jira password, try delete the jira.config.js file.", err);
   }
 };
 
