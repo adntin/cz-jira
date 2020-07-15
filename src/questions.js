@@ -31,22 +31,16 @@ const getCommitQuestions = ({ ticket, summary }) => {
       choices: config.types
     },
     {
-      type: "input",
+      type: "list",
       name: "title",
       message: `Please input your ticket number:`,
-      default: ticket,
-      validate: function(value) {
-        return !!value;
-      }
+      choices: [ticket],
     },
     {
-      type: "input",
+      type: "list",
       name: "summary",
       message: `Please input the ticket summary:`,
-      default: summary,
-      validate: function(value) {
-        return !!value;
-      }
+      choices: [summary],
     },
     {
       type: "input",
