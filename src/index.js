@@ -23,8 +23,7 @@ const commitHandler = async (cz, commit, account) => {
   } catch (error) {
     // failure fetch jira information
     console.log(chalk.red(error) + "\n");
-    const questions = getCommitQuestions({}); // Manually fill
-    await commitizenHandler(cz, commit, questions);
+    process.exit(0);
   }
 };
 
