@@ -46,8 +46,7 @@ const getIssueInfo = async ({ username, password }) => {
       `git branch name: ${branchName}`,
       `ticket: ${ticket}`,
       `prefix: ${prefix}`,
-      `The current "${branchName}" branch cannot fetch Jira information.`,
-      "You need to fill it out manually."
+      `The current "${branchName}" branch cannot fetch Jira information.`
     ];
     throw errors.join("\n");
   }
